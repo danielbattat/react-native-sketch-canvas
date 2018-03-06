@@ -43,9 +43,6 @@
 }
 
 - (void)newPath:(int) pathId strokeColor:(UIColor*) strokeColor strokeWidth:(int) strokeWidth {
-    if (_currentPath) {
-        [_currentPath end];
-    }
     _currentPath = [[RNSketchData alloc]
                     initWithId: pathId
                     strokeColor: strokeColor
@@ -144,14 +141,14 @@
 }
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo: (void *) contextInfo {
-    if (_onChange) {
-        _onChange(@{ @"success": error != nil ? @NO : @YES });
+    if (&_onChange) {
+        &_onChange(@{ @"success": error != nil ? @NO : @YES });
     }
 }
 
 - (void) invalidate:(BOOL)shouldDispatchEvent {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (_onChange && shouldDispatchEvent) {
+        if (&_onChange && shouldDispatchEvent) {
             _onChange(@{ @"pathsUpdate": @(_paths.count) });
         }
         
